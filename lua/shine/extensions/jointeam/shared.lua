@@ -13,7 +13,6 @@ Plugin.avgglobal = avgglobal
 Plugin.avgteam1 = avgteam1
 Plugin.avgteam2 = avgteam2
 Plugin.playersinfo= playersinfo 
-Plugin.tolerance=tolerance
 Plugin.totPlayersMarines =totPlayersMarines
 Plugin.totPlayersAliens =totPlayersAliens
 Plugin.defaultskill=defaultskill
@@ -234,7 +233,7 @@ function Plugin:RefreshGlobalsValues(teams, skills, totPlayer)
 		self.totPlayersMarines=totPlayersMarines
 		self.totPlayersAliens=totPlayersAliens
 		
-		Print("RefreshGlobalsValues(): G: %d - %d M: %d - %d A: %d - %d", totPlayer, self.avgglobal, totPlayersMarines, avgt1, totPlayersAliens, avgt2)
+		Print("%S RefreshGlobalsValues(): G: %d - %d M: %d - %d A: %d - %d", self.tag, totPlayer, self.avgglobal, totPlayersMarines, avgt1, totPlayersAliens, avgt2)
 		
 end
 
