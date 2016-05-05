@@ -39,6 +39,8 @@ TODO list:
 -	restrict the case where a player want to join the team with less people but decrease balance. 
 	Depending on the number of people in RR, and the skill of those peoples.
 	
-
+Note:
+test folder come from Shine github repository.
+Not available on steam workshop
 
 

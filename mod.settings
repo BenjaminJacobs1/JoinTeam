@@ -1,5 +1,27 @@
-name        = "JoinTeam"
-description = [=[]=]
+name        = "Shine JoinTeam"
+source_dir  = ""
+output_dir  = ""
+description = [=[NS2 Shine JoinTeam
+
+version 0.1
+
+The goal of this mod/plugin is to improve the team balance. It restricts the team a player can join depending on the teams averages skills, and on skill of the player itself.
+
+This plugin require Shine mod enabled on the server to be able to run.
+
+The plugin applies the following rules on players who are trying to join a team:
+
+    let them always join the team with the less players
+    let them join any team if the balance of both team improve         or stay equal
+    let them join the team where they improve the balance/         block the opposite team
+    let them join the team where they do less damage to the         balance, if the balance decrease in either team / block the         opposite team
+
+    let them join anyteam if all above failed. (bots,     playerskill=-1, damage to balance is equal for both team)
+
+    Don't block anyone from joining spectator and ready room
+    Let admin and all kind of votes force player teams
+
+More info: https://github.com/BenjaminJacobs1/JoinTeam]=]
 image       = "preview.jpg"
-tag_modtype = ""
-tag_support = ""
+tag_modtype = "Tool"
+tag_support = "Must be run on Server"
