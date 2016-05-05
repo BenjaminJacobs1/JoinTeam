@@ -12,8 +12,6 @@ local tag="[JoinTeam]"
 Plugin.avgglobal = avgglobal
 Plugin.avgteam1 = avgteam1
 Plugin.avgteam2 = avgteam2
-Plugin.bestavgmin = bestavgmin
-Plugin.bestavgmax = bestavgmax
 Plugin.playersinfo= playersinfo 
 Plugin.tolerance=tolerance
 Plugin.totPlayersMarines =totPlayersMarines
@@ -25,7 +23,9 @@ Plugin.tag=tag
 --This table will be passed into server.lua and client.lua as the global value "Plugin".
 Shine:RegisterExtension( "jointeam", Plugin )
 
-
+--Shine hook, when a player try to join a team
+--return without arguments allow the player to join the team
+--return false, 0 prevent the player is not authorized to join the team
 function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- jointeam is hook on server side only
 		
 		--TO DO, do something about the NS2 vote randomize ready room. 
@@ -88,7 +88,7 @@ function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- joi
 					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Wait a change in team balance or join the opposite team", self.tag))
 					return false, 0
 				elseif(canjoin == 3) then
-					Shine:NotifyColour( Player, 0, 0,  255, string.format("%s Welcome in Marines team!", self.tag))
+					Shine:NotifyColour( Player, 0, 150,  255, string.format("%s Welcome in Marines team!", self.tag))
 					return
 				elseif(canjoin == 4) then
 					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Sorry, You cannot join this team due to the teams balance", self.tag))
@@ -120,7 +120,7 @@ function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- joi
 					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Wait a change in team balance or join the opposite team", self.tag))
 					return false, 0
 				elseif(canjoin == 4) then
-					Shine:NotifyColour( Player, 0, 0,  255, string.format("%s Welcome in Aliens team!", self.tag))
+					Shine:NotifyColour( Player, 0, 150,  255, string.format("%s Welcome in Aliens team!", self.tag))
 					return
 				elseif(canjoin == 5) then
 					Shine:NotifyColour( Player, 0, 150, 255, string.format("%s Welcome to the team of your choice!", self.tag))
@@ -129,87 +129,14 @@ function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- joi
 					Print("%s Bot can always join the team of their choice! Are you a bot?", self.tag)
 					return
 				else --6
-					Print("%s GetCanJoinTeam error", self.tag)
+					Print("%s GetCanJoinTeam function error", self.tag)
 					return
 				end
 			end
-			
-			
-			
-			local newTeamskillmarine=(self.avgteam1*team1Players+playerskill)/(team1Players+1)
-			local newTeamskillalien=(self.avgteam2*team2Players+playerskill)/(team2Players+1)
-			Print("newTeamskillmarine %d newTeamskillalien %d", newTeamskillmarine, newTeamskillalien)
-			Print("bestavgmin %d bestavgmax %d",self.bestavgmin,self.bestavgmax)
-			--if the new player let the team within bestavgmin, bestavgmax (tolerance included), let him join the team of his choice
-			if(NewTeam == gamerules.team1:GetTeamNumber()) then --Join Marine
-				
-				if(newTeamskillmarine >= self.bestavgmin) and (newTeamskillmarine <= self.bestavgmax) then
-					Shine:NotifyColour( Player, 0, 150, 255, "You are within balance limit, welcome to the team of your choice")
-					Shine:NotifyColour( Player, 0, 150, 255, string.format("Old avg: %d new avg: %d",self.avgteam1, newTeamskillmarine))
-					return
-				end
-			else --join alien
-				if(newTeamskillalien >= self.bestavgmin) and (newTeamskillalien <= self.bestavgmax) then
-					Shine:NotifyColour( Player, 0, 150, 255, "You are within balance limit, welcome to the team of your choice")
-					Shine:NotifyColour( Player, 0, 150, 255, string.format("Old avg: %d new avg: %d",self.avgteam2, newTeamskillalien))
-					return
-				end
-			end
-			
-			--it leaves only the case where the player can only enter the team if balance "is improved"
-			--It means that it let strong player join the weak team, and weak join the strong team only.
-			--When everyone made a choice, the balance could be out of limit, due to:
-			--	people leaving, 
-			--	people abusing the fact that they are free to join the team with less players
-			local deltaIfJoiningMarine=math.abs(newTeamskillmarine-self.avgteam2)
-			local deltaIfJoiningAlien=math.abs(self.avgteam1-newTeamskillalien)
-			--local teamforced=0
-			--if(math.abs(deltaIfJoiningMarine == deltaIfJoiningAlien) then 
-			--	teamforced=0 
-			if(deltaIfJoiningMarine < deltaIfJoiningAlien) then --the player must join marines
-				teamforced=1
-			else --(deltaIfJoiningMarine > deltaIfJoiningAlien) then --the player must join aliens
-				teamforced=2
-			end
-			
-			--[[
-			if(teamforced == 0) then
-				Shine:NotifyColour( Player, 0, 150, 255, "Welcome to the team of your choice")
-				if(NewTeam == gamerules.team1:GetTeamNumber()) then
-					Shine:NotifyColour( Player, 0, 150, 255, string.format("Old avg: %d new avg: %d",self.avgteam1, newTeamskillmarine))
-				else
-					Shine:NotifyColour( Player, 0, 150, 255, string.format("Old avg: %d new avg: %d",self.avgteam2, newTeamskillalien))
-				end
-				return
-			end
-			]]--
-			
-			
-			if(NewTeam == gamerules.team1:GetTeamNumber()) and (teamforced==1) then --Join Marine
-						Shine:NotifyColour( Player, 0, 255, 0, string.format("Welcome in %s!", Shine:GetTeamName(NewTeam, true)))
-						Shine:NotifyColour( Player, 0, 255, 0, string.format("Old avg: %d new avg: %d",self.avgteam1, newTeamskillmarine))
-						return
-			elseif (NewTeam == gamerules.team2:GetTeamNumber()) and (teamforced==2) then
-						Shine:NotifyColour( Player, 0, 255, 0, string.format("Welcome in %s!", Shine:GetTeamName(NewTeam, true)))
-						Shine:NotifyColour( Player, 0, 255, 0, string.format("Old avg: %d new avg: %d",self.avgteam2, newTeamskillalien))
-						return
-			else
-						Shine:NotifyColour( Player, 255, 0, 0, "Joining this team would badly influence the teams balance!")
-						Shine:NotifyColour( Player, 255, 0, 0, "Please Join the opposite team or wait.")
-						if(NewTeam == gamerules.team1:GetTeamNumber()) then
-						Shine:NotifyColour( Player, 255, 0, 0, string.format("Old avg: %d new avg: %d",self.avgteam1, newTeamskillmarine))
-						else
-						Shine:NotifyColour( Player, 255, 0, 0, string.format("Old avg: %d new avg: %d",self.avgteam2, newTeamskillalien))
-						end
-						return false
-			end
-			---------------------------------------------------------------
-			
 			
 		
-		
-		Shine:NotifyColour( Player, 0, 255, 0, string.format("This message should never appear", Shine:GetTeamName(NewTeam, true)))
-		return   --allow the player to join the team, return false to not allow
+		Print("%s JoinTeam function error", self.tag)
+		return   
 	
 end
 
