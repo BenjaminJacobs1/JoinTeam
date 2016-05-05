@@ -3,14 +3,12 @@ local Plugin = {}
 local avgglobal=0
 local avgteam1=0
 local avgteam2=0
-local bestavgmin=0
-local bestavgmax=0
 local playersinfo
 local Shine=Shine
-local tolerance=25
 local totPlayersMarines=0
 local totPlayersAliens=0
-local defaultskill=750
+local defaultskill=750 --mainly for bots, change the average skill values! TO DO: adapt it to be coherent with what display NS2+ in scoreboard as average.
+local tag="[JoinTeam]"
 Plugin.avgglobal = avgglobal
 Plugin.avgteam1 = avgteam1
 Plugin.avgteam2 = avgteam2
@@ -21,44 +19,30 @@ Plugin.tolerance=tolerance
 Plugin.totPlayersMarines =totPlayersMarines
 Plugin.totPlayersAliens =totPlayersAliens
 Plugin.defaultskill=defaultskill
-local rseed =math.randomseed( os.time() )
+Plugin.tag=tag
+--local rseed =math.randomseed( os.time() )
 
-
-
-function Plugin:Initialise()
-	return true --Loading successfull
-end
 --This table will be passed into server.lua and client.lua as the global value "Plugin".
 Shine:RegisterExtension( "jointeam", Plugin )
 
-Plugin.Conflicts = {
-    --Which plugins should we force to be disabled if they're enabled and we are?
-    DisableThem = {
-         
-    },
-    --Which plugins should force us to be disabled if they're enabled and we are?
-    DisableUs = {
-         
-    }
-}
 
 function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- jointeam is hook on server side only
 		
+		--TO DO, do something about the NS2 vote randomize ready room. 
+		--This vote don't use the force value :x
 		if(force) then
-			Print("Jointeam: You Have been forced to join the team X  by NS2")
+			--Print("Jointeam: You Have been forced to join the team X  by NS2")
 			return
 		elseif(ShineForce) then
-			Print("Jointeam: You Have been forced to join the team X  by Shine")
+			--Print("Jointeam: You Have been forced to join the team X  by Shine")
 			return
 		end
 		
 		if(NewTeam < 1) or (NewTeam > 2) then --join spec or RR
-			Print("Jointeam: If you want to go into the RR or spectate, I let you do")
+			--Print("Jointeam: If you want to go into the RR or spectate, I let you do")
 			return
 		end
 		 
-		
-		--values should be ok before receiving any JoinTeamEvent
 		local gamerules = GetGamerules()
 		local team1Players = gamerules.team1:GetNumPlayers()
         local team2Players = gamerules.team2:GetNumPlayers()
@@ -73,6 +57,7 @@ function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- joi
             end
 			
 			--check if trying to join the team with less players
+			--TO DO check if there is many people in RR and if enough of them can improve the balance, then also restrict the join.
 			if (team1Players > team2Players) and (NewTeam == gamerules.team2:GetTeamNumber()) then
 				Shine:NotifyColour( Player, 0, 150, 255, "You can always join the team where there is less players")
                 Shine:NotifyColour( Player, 0, 150, 255, string.format("Welcome in %s!", Shine:GetTeamName(NewTeam, true)))
@@ -82,10 +67,75 @@ function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- joi
                 Shine:NotifyColour( Player, 0, 150, 255, string.format("Welcome in %s!", Shine:GetTeamName(NewTeam, true)))
                 return 
             end
+			
+			
 			local playerskill=Shared.GetEntity(Player.playerInfo.playerId):GetPlayerSkill()
-			playerskill=self:initPlayerSkill(playerskill)
 			--It let us only the case where the number of players in each team is equal.
-			--team2Players == team1Players
+			
+			local canjoin = self:GetCanJoinTeam(self.avgteam1, self.avgteam2, team1Players, team2Players, playerskill)
+			
+			
+			if(NewTeam == gamerules.team1:GetTeamNumber()) then
+			-- try to join marines
+				if(canjoin == 0) then
+					Shine:NotifyColour( Player, 0, 255, 0, string.format("%s Welcome to the team of your choice!", self.tag))
+					return
+				elseif(canjoin == 1) then
+					Shine:NotifyColour( Player, 0, 255,  0, string.format("%s Welcome in Marines team!", self.tag))
+					return
+				elseif(canjoin == 2) then
+					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Sorry, You cannot join this team due to the teams balance", self.tag))
+					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Wait a change in team balance or join the opposite team", self.tag))
+					return false, 0
+				elseif(canjoin == 3) then
+					Shine:NotifyColour( Player, 0, 0,  255, string.format("%s Welcome in Marines team!", self.tag))
+					return
+				elseif(canjoin == 4) then
+					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Sorry, You cannot join this team due to the teams balance", self.tag))
+					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Wait a change in team balance or join the opposite team", self.tag))
+					return false, 0
+				elseif(canjoin == 5) then
+					Shine:NotifyColour( Player, 0, 150, 255, string.format("%s Welcome to the team of your choice!", self.tag))
+					return
+				elseif(canjoin == 7) then
+					Print("%s Bot can always join the team of their choice! Are you a bot?", self.tag)
+					return
+				else --6
+					Print("%s GetCanJoinTeam error", self.tag)
+					return
+				end
+			else --aliens
+				if(canjoin == 0) then
+					Shine:NotifyColour( Player, 0, 255, 0, string.format("%s Welcome to the team of your choice!", self.tag))
+					return
+				elseif(canjoin == 1) then
+					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Sorry, You cannot join this team due to the teams balance", self.tag))
+					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Wait a change in team balance or join the opposite team", self.tag))
+					return false, 0
+				elseif(canjoin == 2) then
+					Shine:NotifyColour( Player, 0, 255,  0, string.format("%s Welcome in Aliens team!", self.tag))
+					return
+				elseif(canjoin == 3) then
+					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Sorry, You cannot join this team due to the teams balance", self.tag))
+					Shine:NotifyColour( Player, 255, 0,  0, string.format("%s Wait a change in team balance or join the opposite team", self.tag))
+					return false, 0
+				elseif(canjoin == 4) then
+					Shine:NotifyColour( Player, 0, 0,  255, string.format("%s Welcome in Aliens team!", self.tag))
+					return
+				elseif(canjoin == 5) then
+					Shine:NotifyColour( Player, 0, 150, 255, string.format("%s Welcome to the team of your choice!", self.tag))
+					return
+				elseif(canjoin == 7) then
+					Print("%s Bot can always join the team of their choice! Are you a bot?", self.tag)
+					return
+				else --6
+					Print("%s GetCanJoinTeam error", self.tag)
+					return
+				end
+			end
+			
+			
+			
 			local newTeamskillmarine=(self.avgteam1*team1Players+playerskill)/(team1Players+1)
 			local newTeamskillalien=(self.avgteam2*team2Players+playerskill)/(team2Players+1)
 			Print("newTeamskillmarine %d newTeamskillalien %d", newTeamskillmarine, newTeamskillalien)
@@ -168,12 +218,12 @@ function Plugin:PostJoinTeam( Gamerules, Player, OldTeam, NewTeam, Force, ShineF
 end
 
 function Plugin:ClientConfirmConnect( Client )
-	Print("ClientConfirmConnect - update AVG values")
+	--Print("ClientConfirmConnect - update AVG values")
 	self:updateValues()
 end
 
 function Plugin:ClientDisconnect( Client )
-	Print("Player disconnect - update AVG values")
+	--Print("Player disconnect - update AVG values")
 	self:updateValues()
 end
 
@@ -187,22 +237,12 @@ function Plugin:updateValues()
 		local playerskill=self:initPlayerSkill(Ent.playerSkill)
 		if(Ent.teamNumber ~= 3 ) then --not spectating
 			table.insert(teams, Ent.teamNumber)
-			
-			--to test with bots, override their skill values
-			--doen't work
-			--if(playerskill==defaultskill) then
-			--local r =math.random(1, 3000)
-			--playerskill=r
-			--Ent.playerSkill=r
-			--end
-			
 			table.insert(skills, playerskill)
-			Print(string.format("Playername: %s steamid: %s teamname: %s skill: %d", Ent.playerName,  tostring( Ent.steamId ), Shine:GetTeamName( Ent.teamNumber, true ), Ent.playerSkill))
+			--Print(string.format("Playername: %s steamid: %s teamname: %s skill: %d", Ent.playerName,  tostring( Ent.steamId ), Shine:GetTeamName( Ent.teamNumber, true ), Ent.playerSkill))
 		end
 	end
 	self:RefreshGlobalsValues(teams, skills, totPlayer)
-	--!GetBestAVG remove all element in skills.
-	self:GetBestAVG(skills)
+	
 end
 
 --some players connect with a skill == nil or -1
@@ -217,7 +257,7 @@ function Plugin:initPlayerSkill(s)
 					
 					
 	else
-		Print("Invalid skill or Bot ==> skill set to %d",defaultskill)
+		--Print("Invalid skill or Bot ==> skill set to %d",defaultskill)
 		
 	end
 	return playerskill
@@ -271,64 +311,56 @@ function Plugin:RefreshGlobalsValues(teams, skills, totPlayer)
 		
 end
 
---calculate the Best teams AVG we can have
-function Plugin:GetBestAVG(skills)
-	
-	table.sort(skills)
-	--Print("Player sorted by skill DESC: ")
-	for i,n in ipairs(skills) do Print("%d: %d", i, n) end  --Print to check if it sort correctly the table
-	--Print("END Player sorted by skill ")
-	
-	local totplayert1=0
-	local totplayert2=0
-	local avgt1=0
-	local avgt2=0
-	local totplayer=table.getn(skills)
+--The function define if a player witch team(s), he can join.
+--The value returned is:
+	-- 0: Can join any team
+	-- 1: can join only marines and improve balance
+	-- 2: can join only aliens and improve balance
+	-- 3: can join marines and decrease balance (but less than aliens)
+	-- 4: can join aliens and decrease balance (but less than  marines)
+	-- 5: can join any team and decrease the balance identically whatever the team he choose
+	-- 6: can join anyteam, function malfunctionned.
+	-- 7: playerskill == -1, the player is probably a bot
 
-	--Print("number of players %d", table.getn(skills))
-	while (table.getn(skills) ~= 0) do
-		if totplayert1 <= totplayert2 then --there is more player in t2
-			if avgt1 <= avgt2 then
-				avgt1=avgt1+table.remove(skills) --strongest remaining skill
-			else
-				avgt1=avgt1+table.remove(skills, 1) --weakest remaining skill
-			end
-			totplayert1=totplayert1+1
-		else --there is more player in t1
-			if avgt2 <= avgt1 then
-				avgt2=avgt2+table.remove(skills) --strongest remaining skill
-			else
-				avgt2=avgt2+table.remove(skills, 1) --weakest remaining skill
-			end
-			totplayert2=totplayert2+1
+--For testing we must pass all arguments, instead of using plugins variables
+function Plugin:GetCanJoinTeam(avgt1, avgt2, numPlayert1, numPlayert2, playerskill)
+
+	if(playerskill == -1) then
+		return 7
+	end
+	
+	local newavgt1=(avgt1*numPlayert1+playerskill)/(numPlayert1+1)
+	local newavgt2=(avgt2*numPlayert2+playerskill)/(numPlayert2+1)
+
+	--Print("Skill: %d  t1(count/avg/newavg): %d/%d/%d t2(count/avg/newavg): %d/%d/%d", playerskill, numPlayert1, avgt1, newavgt1, numPlayert2, avgt2, newavgt2 )
+
+	local deltaCurrent = math.abs((avgt1-avgt2))
+	local deltaT1 = math.abs((newavgt1-avgt2))
+	local deltaT2 = math.abs((newavgt2-avgt1))
+
+	if((deltaT1 <= deltaCurrent) and (deltaT2 <= deltaCurrent)) then
+		--Improve balance when joining anyteam
+		return 0	
+	elseif((deltaT1 <= deltaCurrent) and (deltaT2 > deltaCurrent)) then
+		--Improve balance when joining marines team only 
+		return 1
+	elseif((deltaT1 > deltaCurrent) and (deltaT2 <= deltaCurrent)) then
+		--Improve balance when joining aliens team only 
+		return 2
+	elseif((deltaT1 > deltaCurrent) and (deltaT2 > deltaCurrent)) then
+		--Never improve balance when joining, we need to find the team where he does less damage
+		if(deltaT1 < deltaT2) then
+			return 3
+		elseif(deltaT1 > deltaT2)then
+			return 4
+		else --deltaT1 == deltaT2
+			return 5
 		end
-	end
-	if totplayert1 ~= 0 then
-			avgt1=avgt1/totplayert1
-	end
-	if totplayert2 ~= 0 then
-		avgt2=avgt2/totplayert2
-	end
-	
-	--Print(string.format("Best AVG? %d %d", avgt1, avgt2))
-	
-	if avgt1 <= avgt2 then
-		avgt1=avgt1-tolerance
-		avgt2=avgt2+tolerance
-		self.bestavgmin = avgt1
-		self.bestavgmax = avgt2
 	else
-		avgt1=avgt1+tolerance
-		avgt2=avgt2-tolerance
-		self.bestavgmin = avgt2
-		self.bestavgmax = avgt1
+	--Should never be reach
+		return 6
 	end
 	
 	
-	
-	
-	Print(string.format("Best AVG with tolerance? min: %d max: %d tol:", self.bestavgmin, self.bestavgmax, tolerance))
-	
-	
-	
+
 end

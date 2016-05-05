@@ -2,17 +2,6 @@
 local Plugin = Plugin
 
 
-Plugin.HasConfig = true
-Plugin.ConfigName = "JoinTeam.json"
-Plugin.DefaultConfig = { 
-	--Tolerance = 50 --TO DO IMPLEMENT IT
-	--IgnoreSpectator=true
-	--checkSmallerTeam=false check balance also when player want to join the team with less players
-}
-Plugin.CheckConfig = true --Should we check for missing/unused entries when loading?
-Plugin.CheckConfigTypes = true --Should we check the types of values in the config to make sure they match our default's types?
-Plugin.DefaultState = true --Should the plugin be enabled when it is first added to the config?
-
 function Plugin:Initialise()
 	self:CreateCommands()
 	self.Enabled = true
