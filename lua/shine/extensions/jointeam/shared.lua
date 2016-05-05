@@ -233,7 +233,7 @@ function Plugin:RefreshGlobalsValues(teams, skills, totPlayer)
 		self.totPlayersMarines=totPlayersMarines
 		self.totPlayersAliens=totPlayersAliens
 		
-		Print("%S RefreshGlobalsValues(): G: %d - %d M: %d - %d A: %d - %d", self.tag, totPlayer, self.avgglobal, totPlayersMarines, avgt1, totPlayersAliens, avgt2)
+		Print("%s RefreshGlobalsValues(): G: %d - %d M: %d - %d A: %d - %d", self.tag, totPlayer, self.avgglobal, totPlayersMarines, avgt1, totPlayersAliens, avgt2)
 		
 end
 
