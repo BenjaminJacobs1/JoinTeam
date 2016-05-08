@@ -1,0 +1,9 @@
+{
+	"NOTIFY_PREFIX":"[JoinTeam]",
+	"OK_LESS_PLAYER": "You can always join the team where there is less players",
+	"OK_CHOICE":"Welcome to the team of your choice!",
+	"OK_MARINES":"Welcome in Marines team!",
+	"OK_ALIENS":"Welcome in Aliens team!",
+	"ERROR_1": "Sorry, You cannot join this team due to the teams balance",
+	"ERROR_2": "Wait a change in team balance or join the opposite team"
+}
