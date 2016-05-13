@@ -1,7 +1,5 @@
 # NS2 Shine JoinTeam
 
-version 0.2
-
 The goal of this mod/plugin is to improve the team balance.
 It restricts the team a player can join depending on the teams averages skills,
 and on the skill of the player itself.
@@ -31,7 +29,9 @@ Recommandations:
 	after XX/2014 will also start at 1000 skill point instead of 0.
 -	This plugin let players choose their teams and the balance obtained will be less
 	precise than a shuffle.
--	The current calculation will lead to strange result with bots. 
+-	The current calculation will lead to strange result with bots.
+-	You display the hive skill of the teams and players in the scoreboard using NS2+ mod options. 
+	(it will be less confusing for players, who cannot join the team of their choice) 
 
 This Plugin is under development,
 Please report any issue.
@@ -49,6 +49,7 @@ TODO list:
 	and defaultskill=750 parameter
 -	restrict the case where a player want to join the team with less people but decrease balance. 
 	Depending on the number of people in RR, and the skill of those peoples.
+-	Improve notifcations, so the players know excatly why they cannot join a team.
 	
 Note:
 Test folder comes from Shine github repository and is only present on github.
