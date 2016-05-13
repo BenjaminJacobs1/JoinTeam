@@ -60,4 +60,5 @@ Test folder comes from Shine github repository and is only present on github.
 	]
 image       = "preview.jpg"
 tag_modtype = "Tool"
-tag_support = "Must be run on Server"
+tag_support = ""
+publish_id = "287aa07b"

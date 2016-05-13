@@ -1,6 +1,6 @@
 # NS2 Shine JoinTeam
 
-version 0.1
+version 0.2
 
 The goal of this mod/plugin is to improve the team balance.
 It restricts the team a player can join depending on the teams averages skills,
@@ -53,5 +53,7 @@ TODO list:
 Note:
 Test folder comes from Shine github repository and is only present on github.
 
-
+Version:
+0.1: First version
+0.2: Added translations for English, German and French
 
