@@ -36,6 +36,8 @@ Recommandations:
 This Plugin is under development,
 Please report any issue.
 The plugin is available in github: https://github.com/BenjaminJacobs1/JoinTeam
+If you are looking for documentation about shine in general, take a look here:
+https://github.com/Person8880/Shine/wiki
 
 known issues:
 -	NS2 vote randomize ready room will problably not work properly
