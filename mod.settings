@@ -27,6 +27,16 @@ The plugin applies the following rules on a player who is trying to join a team.
 -	Don't block anyone from joining spectator and ready room
 -	Admins and all kind of votes can ovveride the above rules and force the player team
 
+Configuration:
+
+The plugin has the following options available in /shine/plugins/JoinTeam.json
+
+{
+    "InformPlayer":true, --Display a colored message to players in ready room, making them aware of the skill balance
+    "ForcePlayer":true,  --Enable the jointeam restriction for players that are trying to join teams
+	"defaultSkill":750   --For bots and fresh new players. if you want it to be fully coherent with NS2+ scoreboard then set the value to 0
+}
+
 Recommandations:
 -	This plugin depends on the Hive skill system and cannot be better than the system itself 
 	--> not recommended on rookie server
@@ -45,18 +55,16 @@ If you are looking for documentation about shine in general, take a look here:
 https://github.com/Person8880/Shine/wiki
 
 known issues:
--	NS2 vote randomize ready room will problably not work properly
+-	NS2 vote randomize ready room will problably not work properly (when ForcePlayer=true)
 -	The plugin set bots skill to 750. This influence the team average skills. 
 -	Some People might be able to join a team, because the plugin was not able to get their skill
-	, or their skill is equal to -1.
+	or their skill is equal to -1.
 
 
 TODO list:
--	The skill calculation/displayed should be coherent with NS2+ scoreboard, regarding bots 
-	and defaultskill=750 parameter
 -	restrict the case where a player want to join the team with less people but decrease balance. 
 	Depending on the number of people in RR, and the skill of those peoples.
--	Improve notifcations, so the players know excatly why they cannot join a team.
+-	Add translation for the ready room message
 	
 Note:
 Test folder comes from Shine github repository and is only present on github.
@@ -64,6 +72,7 @@ Test folder comes from Shine github repository and is only present on github.
 Version:
 0.1: First version
 0.2: Added translations for English, German and French
+0.3: Added information message to players in RR
 
 
 	]=]
