@@ -26,11 +26,11 @@ Configuration:
 
 The plugin has the following options available in /shine/plugins/JoinTeam.json
 
-{
+    {
     "InformPlayer":true, --Display a colored message to players in ready room, making them aware of the skill balance
     "ForcePlayer":true,  --Enable the jointeam restriction for players that are trying to join teams
 	"defaultSkill":750   --For bots and fresh new players. if you want it to be fully coherent with NS2+ scoreboard then set the value to 0
-}
+    }
 
 Recommandations:
 -	This plugin depends on the Hive skill system and cannot be better than the system itself 
