@@ -26,12 +26,11 @@ function Plugin:Initialise()
 			self.dt.defaultSkill=self.Config.defaultSkill
 	end
 
-	self:CreateCommands()
+	--self:CreateCommands()
 	self.Enabled = true
 	return true
 end
 
---Here we create two commands that set our datatable values.
 function Plugin:CreateCommands()
 	local Commands = Plugin.Commands
 

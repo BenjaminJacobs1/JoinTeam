@@ -16,7 +16,6 @@ function Plugin:Initialise()
 end
 
 function Plugin:UpdateScreenTextStatus()
-	
 	if(self.dt.inform == true) then
 		--On postjoin server hook, the datatable values are updated and I just have to check the team of the player
 		--to know if I must show the message
@@ -62,7 +61,7 @@ function Plugin:UpdateScreenTextStatus()
 					self.screentext_current =Shine.ScreenText.Add( "screentext_current", {
 								X =0.6,
 								Y = 0.5,
-								Text = string.format("Current Balance: M: %d Delta: %d A: %d", avgt1, deltaCurrent, avgt2),
+								Text = string.format("%s M: %d Delta: %d A: %d", self:GetPhrase( "TEXT_CURRENT" ), avgt1, deltaCurrent, avgt2),
 								R = self.current_color[1],
 								G = self.current_color[2],
 								B = self.current_color[3],
@@ -73,7 +72,7 @@ function Plugin:UpdateScreenTextStatus()
 					self.screentext_JoinM =Shine.ScreenText.Add( "screentext_JoinM", {
 										X =0.6,
 										Y = 0.55,
-										Text = string.format("New balance if you Join Marines: M %d Delta: %d  A: %d",newavgt1,deltaT1,avgt2),
+										Text = string.format("%s M %d Delta: %d  A: %d", self:GetPhrase( "TEXT_JOIN_M" ), newavgt1,deltaT1,avgt2),
 										R = self.JoinM_color[1],
 										G = self.JoinM_color[2],
 										B = self.JoinM_color[3],
@@ -85,7 +84,7 @@ function Plugin:UpdateScreenTextStatus()
 					self.screentext_JoinA =Shine.ScreenText.Add( "screentext_JoinA", {
 										X =0.6,
 										Y = 0.6,
-										Text = string.format("New balance if you Join Aliens: M %d Delta: %d  A: %d", avgt1, deltaT2,newavgt2),
+										Text = string.format("%s M %d Delta: %d  A: %d", self:GetPhrase( "TEXT_JOIN_A" ), avgt1, deltaT2,newavgt2),
 										R = self.JoinA_color[1],
 										G = self.JoinA_color[2],
 										B = self.JoinA_color[3],
