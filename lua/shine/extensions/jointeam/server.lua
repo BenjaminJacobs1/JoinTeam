@@ -26,7 +26,6 @@ Plugin.ConfigName = "JoinTeam.json"
 Plugin.DefaultConfig = {
     InformPlayer = true,
 	ForcePlayer = true,
-	defaultSkill=750
 }
 Plugin.CheckConfig = true
 
@@ -190,7 +189,7 @@ function Plugin:updateValues()
 	local skills = {}
 	local teams = {}
 	for i, Ent in ientitylist( playersinfo ) do
-		local playerskill=self:initPlayerSkill(Ent.playerSkill)
+		local playerskill=Ent.playerSkill
 		if(Ent.teamNumber ~= 3 ) then --not spectating
 			table.insert(teams, Ent.teamNumber)
 			table.insert(skills, playerskill)
@@ -213,23 +212,22 @@ function Plugin:RefreshGlobalsValues(teams, skills, totPlayer)
 		local avgt2=0
 		
 		for key,teamNumber in ipairs(teams) do
-			
-			
-			if(teamNumber == 1 ) then --Marines 
-				totPlayersMarines=totPlayersMarines+1
-				avgt1=avgt1+skills[key]
-				avg=avg+skills[key]
-			elseif (teamNumber == 2 ) then --Aliens
-				totPlayersAliens=totPlayersAliens+1
-				avgt2=avgt2+skills[key]
-				avg=avg+skills[key]
-			elseif (teamNumber ==  3) then --Spectate
-				--Ignore the players in spectators
-				totPlayer=totPlayer-1
-			else --ReadyRoom (4)
-				avg=avg+skills[key]
+			if(skills[key] ~= nil and skills[key] ~= -1) then   --ignore bots and players without skill
+				if(teamNumber == 1 ) then --Marines 
+					totPlayersMarines=totPlayersMarines+1
+					avgt1=avgt1+skills[key]
+					avg=avg+skills[key]
+				elseif (teamNumber == 2 ) then --Aliens
+					totPlayersAliens=totPlayersAliens+1
+					avgt2=avgt2+skills[key]
+					avg=avg+skills[key]
+				elseif (teamNumber ==  3) then --Spectate
+					--Ignore the players in spectators
+					totPlayer=totPlayer-1
+				else --ReadyRoom (4)
+					avg=avg+skills[key]
+				end
 			end
-
 		end
 		
 		if totPlayer ~= 0 then

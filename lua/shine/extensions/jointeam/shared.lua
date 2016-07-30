@@ -11,7 +11,6 @@ function Plugin:SetupDataTable()
 	self:AddDTVar( "integer (0 to 100)", "totPlayersMarines", 0 )
 	self:AddDTVar( "integer (0 to 100)", "totPlayersAliens", 0 )
 	self:AddDTVar( "boolean", "inform", true )
-	self:AddDTVar( "integer (0 to 10000)", "defaultSkill", 750 )
 	self:AddNetworkMessage( "DisplayScreenText", { show = "boolean" }, "Client" )
 end
 
@@ -23,7 +22,6 @@ Shine:RegisterExtension( "jointeam", Plugin )
 function Plugin:Initialise()
 	if(Server) then
 			self.dt.inform=self.Config.InformPlayer
-			self.dt.defaultSkill=self.Config.defaultSkill
 	end
 
 	--self:CreateCommands()
@@ -51,26 +49,6 @@ function Plugin:NetworkUpdate( Key, OldValue, NewValue )
 	self:UpdateScreenTextStatus()
  end
  
-end
-
---some players connect with a skill == nil or -1
--- and Bots connect with a skill of -1
---For plugin sanity the default skill value is set to 750
---TODO add it as option
-function Plugin:initPlayerSkill(s)
-	local playerskill=750
-	if(self.Config ~= nil and self.dt.defaultSkill ~= nil) then
-		playerskill = self.dt.defaultSkill
-	end
-	
-	--Print("skill? %s", s)
-	if s ~= nil and s ~= -1 then
-					playerskill = s		
-	else
-		--Print("Invalid skill or Bot ==> skill set to %d",defaultskill)
-		
-	end
-	return playerskill
 end
 
 --The function define if a player witch team(s), he can join.

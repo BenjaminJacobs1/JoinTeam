@@ -1,4 +1,5 @@
 # NS2 Shine JoinTeam
+ModID: 287aa07b
 
 The goal of this mod/plugin is to improve the team balance.
 It restricts the team a player can join depending on the teams averages skills,
@@ -29,7 +30,6 @@ The plugin has the following options available in /shine/plugins/JoinTeam.json
     {
     "InformPlayer":true, --Display a colored message to players in ready room, making them aware of the skill balance
     "ForcePlayer":true,  --Enable the jointeam restriction for players that are trying to join teams
-	"defaultSkill":750   --For bots and fresh new players. if you want it to be fully coherent with NS2+ scoreboard then set the value to 0
     }
 
 Recommandations:
@@ -39,11 +39,10 @@ Recommandations:
 	after XX/2014 will also start at 1000 skill point instead of 0.
 -	This plugin let players choose their teams and the balance obtained will be less
 	precise than a shuffle.
--	The current calculation will lead to strange result with bots.
--	You display the hive skill of the teams and players in the scoreboard using NS2+ mod options. 
+-	You should display the hive skill of the teams and players in the scoreboard using NS2+ mod options. 
 	(it will be less confusing for players, who cannot join the team of their choice) 
+-	The plugin ignore bots for the average skill calculation. This influence the team average skills and players count in each team. 
 
-This Plugin is under development,
 Please report any issue.
 The plugin is available in github: https://github.com/BenjaminJacobs1/JoinTeam
 If you are looking for documentation about shine in general, take a look here:
@@ -51,15 +50,13 @@ https://github.com/Person8880/Shine/wiki
 
 known issues:
 -	NS2 vote randomize ready room will problably not work properly (when ForcePlayer=true)
--	The plugin set bots skill to 750. This influence the team average skills. 
 -	Some People might be able to join a team, because the plugin was not able to get their skill
 	or their skill is equal to -1.
 
 
-TODO list:
+Potential improvments:
 -	restrict the case where a player want to join the team with less people but decrease balance. 
 	Depending on the number of people in RR, and the skill of those peoples.
--	Add translation for the ready room message
 	
 Note:
 Test folder comes from Shine github repository and is only present on github.
@@ -68,4 +65,5 @@ Version:
 0.1: First version
 0.2: Added translations for English, German and French
 0.3: Added information message to players in RR
+0.4: Ignore bots skill to solve warmup issue
 
