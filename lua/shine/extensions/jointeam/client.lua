@@ -12,6 +12,7 @@ Plugin.JoinM_color= { 0, 150, 255}
 Plugin.JoinA_color= { 0, 150, 255}
 
 function Plugin:Initialise()
+	
 	return true
 end
 

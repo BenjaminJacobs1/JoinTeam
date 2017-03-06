@@ -20,6 +20,7 @@ Shine:RegisterExtension( "jointeam", Plugin )
 
 
 function Plugin:Initialise()
+	Print("plugin loaded version 20170306_16:09")
 	if(Server) then
 			self.dt.inform=self.Config.InformPlayer
 	end
