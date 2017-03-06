@@ -33,10 +33,7 @@ The plugin has the following options available in /shine/plugins/JoinTeam.json
     }
 
 Recommandations:
--	This plugin depends on the Hive skill system and cannot be better than the system itself 
-	--> not recommended on rookie server
--	The hive system need a lot of time to get an accurate player skill, players coming back 
-	after XX/2014 will also start at 1000 skill point instead of 0.
+-	--> not recommended on rookie server
 -	This plugin let players choose their teams and the balance obtained will be less
 	precise than a shuffle.
 -	You should display the hive skill of the teams and players in the scoreboard using NS2+ mod options. 

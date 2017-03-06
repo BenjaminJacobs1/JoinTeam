@@ -10,6 +10,8 @@ function Plugin:SetupDataTable()
     self:AddDTVar( "integer (0 to 10000)", "avgteam2", 0 )
 	self:AddDTVar( "integer (0 to 100)", "totPlayersMarines", 0 )
 	self:AddDTVar( "integer (0 to 100)", "totPlayersAliens", 0 )
+	--The below var is used, to hide directly the text when you join spectator and directly shows it back when you re-join the RR
+	self:AddDTVar( "integer (0 to 10)", "triggertextupdate", 0)
 	self:AddDTVar( "boolean", "inform", true )
 	self:AddNetworkMessage( "DisplayScreenText", { show = "boolean" }, "Client" )
 end
@@ -20,7 +22,7 @@ Shine:RegisterExtension( "jointeam", Plugin )
 
 
 function Plugin:Initialise()
-	Print("plugin loaded version 20170306_16:09")
+	Print("Shine plugin Jointeam loaded version 20170306_18:35")
 	if(Server) then
 			self.dt.inform=self.Config.InformPlayer
 	end

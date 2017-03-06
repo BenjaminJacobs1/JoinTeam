@@ -12,7 +12,33 @@ Plugin.JoinM_color= { 0, 150, 255}
 Plugin.JoinA_color= { 0, 150, 255}
 
 function Plugin:Initialise()
-	
+	--dealing with the menu
+	local old = MainMenu_OnCloseMenu;
+	function MainMenu_OnCloseMenu()
+	  old();
+	  --Print("Menu was closed!");
+	  local teamnumber = Client.GetLocalClientTeamNumber()
+	  --close menu when client is in RR returns 0 or -1 for some obscure reasons
+	  if((teamnumber == 0 or teamnumber == -1) and self.screentext_current ~= nil and self.screentext_JoinM ~= nil and self.screentext_JoinA ~= nil) then --RR
+		  self.screentext_current.Obj:SetIsVisible(true)
+		  self.screentext_JoinM.Obj:SetIsVisible(true)
+		  self.screentext_JoinA.Obj:SetIsVisible(true)
+	  end
+	end
+	self.oldOnClose = old;
+	local old = MainMenu_OnOpenMenu;
+	function MainMenu_OnOpenMenu()
+		  old();
+		  --Print("Menu was opened!");
+		  if(self.screentext_current ~= nil and self.screentext_JoinM ~= nil and self.screentext_JoinA ~= nil) then
+			  self.screentext_current.Obj:SetIsVisible(false)
+			  self.screentext_JoinM.Obj:SetIsVisible(false)
+			  self.screentext_JoinA.Obj:SetIsVisible(false)
+		  end
+	end
+	self.oldOnOpen = old;
+	--end dealing with the menu
+
 	return true
 end
 
@@ -136,6 +162,11 @@ function Plugin:Cleanup()
 	self.screentext_JoinA = nil
 
 	self.BaseClass.Cleanup( self )
+	
+	MainMenu_OnOpenMenu = self.oldOnOpen;
+	MainMenu_OnCloseMenu = self.oldOnClose;
+	
 
 	self.Enabled = false
+	
 end

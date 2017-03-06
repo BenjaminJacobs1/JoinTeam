@@ -35,7 +35,6 @@ Plugin.CheckConfig = true
 --return false, 0 prevent the player is not authorized to join the team
 function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- jointeam is hook on server side only
 	if(self.Config.ForcePlayer == true) then
-		Print("Jointeam: trying to join: %d  player: %s", NewTeam, Player.name)
 		--TO DO, do something about the NS2 vote randomize ready room. 
 		--This vote don't use the force value :x
 		if(force) then
@@ -165,7 +164,6 @@ function Plugin:JoinTeam( Gamerules, Player, NewTeam, force, ShineForce ) -- joi
 end
 
 function Plugin:PostJoinTeam( Gamerules, Player, OldTeam, NewTeam, Force, ShineForce )
-	Print("Jointeam: old team: %d new team %d player: %s", OldTeam, NewTeam, Player.name)
 	self:updateValues()
 end
 
@@ -252,7 +250,7 @@ function Plugin:RefreshGlobalsValues(teams, skills, totPlayer)
 		self.dt.avgteam2=avgt2
 		self.dt.totPlayersMarines=totPlayersMarines
 		self.dt.totPlayersAliens=totPlayersAliens
-		
+		self.dt.triggertextupdate=(self.dt.triggertextupdate+1)%10
 		--Print("%s RefreshGlobalsValues(): G: %d - %d M: %d - %d A: %d - %d", self.tag, totPlayer, self.avgglobal, totPlayersMarines, avgt1, totPlayersAliens, avgt2)
 		
 end
