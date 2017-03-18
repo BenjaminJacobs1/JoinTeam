@@ -19,18 +19,60 @@ end
 Shine:RegisterExtension( "jointeam", Plugin )
 
 
-
-
 function Plugin:Initialise()
-	Print("Shine plugin Jointeam loaded version 20170306_18:35")
+	Print("Shine plugin Jointeam loaded version 20170318_15:11")
 	if(Server) then
 			self.dt.inform=self.Config.InformPlayer
 	end
-
 	--self:CreateCommands()
+	--Replace the random team behavior to always choose the team where the player improve the skills
+	if Server then
+		local oldJoinRandomTeam = JoinRandomTeam;
+		function JoinRandomTeam(player)
+			--oldJoinRandomTeam(player);
+			-- Join team with less players or random.
+			local team1Players = GetGamerules():GetTeam(kTeam1Index):GetNumPlayers()
+			local team2Players = GetGamerules():GetTeam(kTeam2Index):GetNumPlayers()
+			
+			-- Join team with least.
+			if team1Players < team2Players then
+				Server.ClientCommand(player, "jointeamone")
+			elseif team2Players < team1Players then
+				Server.ClientCommand(player, "jointeamtwo")
+			else
+				local playerskill = player.GetPlayerSkill and player:GetPlayerSkill() or 0
+				Print("pskill: %s", playerskill);
+				local team_number
+				if(playerskill ~= -1) then
+					team_number =self:GetCanJoinTeam(self.dt.avgteam1, self.dt.avgteam2, self.dt.totPlayersMarines, self.dt.totPlayersAliens, playerskill)
+				else --player has no skill, let him join a random team
+					team_number=0
+				end
+				
+				if(team_number == 0 or team_number == 5 or team_number == 6 or team_number == 7) then
+					if math.random() < 0.5 then
+						Server.ClientCommand(player, "jointeamone")
+					else
+						Server.ClientCommand(player, "jointeamtwo")
+					end
+				elseif(team_number == 1 or team_number == 3) then
+					Server.ClientCommand(player, "jointeamone")
+				else --2 or 4
+					Server.ClientCommand(player, "jointeamtwo")
+				end
+				
+			end
+		end
+		self.oldJoinRandomTeam = oldJoinRandomTeam;
+	end
+	--
+	
+	
 	self.Enabled = true
 	return true
 end
+
+
 
 function Plugin:CreateCommands()
 	local Commands = Plugin.Commands
@@ -108,3 +150,10 @@ function Plugin:GetCanJoinTeam(avgt1, avgt2, numPlayert1, numPlayert2, playerski
 
 end
 
+function Plugin:Cleanup()
+if Server then
+JoinRandomTeam=self.oldJoinRandomTeam;
+end
+
+self.Enabled = false
+end

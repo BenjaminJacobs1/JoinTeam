@@ -39,6 +39,7 @@ function Plugin:Initialise()
 	self.oldOnOpen = old;
 	--end dealing with the menu
 
+	
 	return true
 end
 
@@ -165,7 +166,6 @@ function Plugin:Cleanup()
 	
 	MainMenu_OnOpenMenu = self.oldOnOpen;
 	MainMenu_OnCloseMenu = self.oldOnClose;
-	
 
 	self.Enabled = false
 	

@@ -63,4 +63,6 @@ Version:
 0.2: Added translations for English, German and French
 0.3: Added information message to players in RR
 0.4: Ignore bots skill to solve warmup issue
+0.5: fix text not correctly displayed
+0.6: player joining random will be put in a specific team based on the hiveskill
 
