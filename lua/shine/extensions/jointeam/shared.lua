@@ -20,7 +20,7 @@ Shine:RegisterExtension( "jointeam", Plugin )
 
 
 function Plugin:Initialise()
-	Print("Shine plugin Jointeam loaded version 20170318_15:11")
+	Print("Shine plugin Jointeam loaded version 20170627_2119")
 	if(Server) then
 			self.dt.inform=self.Config.InformPlayer
 	end
@@ -153,6 +153,14 @@ end
 function Plugin:Cleanup()
 if Server then
 JoinRandomTeam=self.oldJoinRandomTeam;
+end
+
+if Client then
+	if(self.screentext_current) then
+				self.screentext_current.Obj:SetIsVisible(false)
+				self.screentext_JoinM.Obj:SetIsVisible(false)
+				self.screentext_JoinA.Obj:SetIsVisible(false)
+	end
 end
 
 self.Enabled = false

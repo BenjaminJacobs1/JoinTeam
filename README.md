@@ -34,8 +34,6 @@ The plugin has the following options available in /shine/plugins/JoinTeam.json
 
 Recommandations:
 -	--> not recommended on rookie server
--	This plugin let players choose their teams and the balance obtained will be less
-	precise than a shuffle.
 -	You should display the hive skill of the teams and players in the scoreboard using NS2+ mod options. 
 	(it will be less confusing for players, who cannot join the team of their choice) 
 -	The plugin ignore bots for the average skill calculation. This influence the team average skills and players count in each team. 
@@ -49,11 +47,6 @@ known issues:
 -	NS2 vote randomize ready room will problably not work properly (when ForcePlayer=true)
 -	Some People might be able to join a team, because the plugin was not able to get their skill
 	or their skill is equal to -1.
-
-
-Potential improvments:
--	restrict the case where a player want to join the team with less people but decrease balance. 
-	Depending on the number of people in RR, and the skill of those peoples.
 	
 Note:
 Test folder comes from Shine github repository and is only present on github.
@@ -65,4 +58,5 @@ Version:
 0.4: Ignore bots skill to solve warmup issue
 0.5: fix text not correctly displayed
 0.6: player joining random will be put in a specific team based on the hiveskill
+0.7: Remove screentext when the plugin is disabled
 
